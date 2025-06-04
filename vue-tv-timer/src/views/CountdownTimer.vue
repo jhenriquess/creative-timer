@@ -96,14 +96,14 @@ import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'CountdownTimer',
-  setup() {
-    const store = useStore();
+  setup() {    const store = useStore();
     const router = useRouter();
     const isRunning = ref(false);
     const isFinished = ref(false);
     const soundOn = ref(true);
     let timerInterval: number;
-    const audio = new Audio('/teste.wav');
+    const audio = new Audio('/fimTreino.wav');
+    const startSound = new Audio('/inicioTreino.wav');
 
     const formatTime = computed(() => {
       const time = store.state.currentTime;
@@ -119,11 +119,12 @@ export default defineComponent({
       const minutes = Math.floor(time / 60);
       const seconds = time % 60;
       return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    });
-
-    const toggleTimer = () => {
+    });    const toggleTimer = () => {
       isRunning.value = !isRunning.value;
       if (isRunning.value) {
+        if (soundOn.value) {
+          startSound.play().catch((error) => console.log('Erro ao tocar áudio:', error));
+        }
         timerInterval = setInterval(() => {
           store.commit('decrementTime');
         }, 1000);
